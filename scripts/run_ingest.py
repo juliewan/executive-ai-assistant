@@ -1,3 +1,12 @@
+import sys
+import os
+
+# Get the absolute path to the parent directory
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+
+# Add parent directory to sys.path (at the front)
+sys.path.insert(0, parent_dir)
+
 import argparse
 import asyncio
 from typing import Optional

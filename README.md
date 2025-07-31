@@ -80,7 +80,7 @@ Let's now kick off an ingest job to ingest some emails and run them through our 
 Leave the `langgraph dev` command running, and open a new terminal. From there, get back into this directory and virtual environment. To kick off an ingest job, run:
 
 ```shell
-python scripts/run_ingest.py --minutes-since 120 --rerun 1 --early 0
+python3.11 scripts/run_ingest.py --minutes-since 120 --rerun 1 --early 0
 ```
 
 This will ingest all emails in the last 120 minutes (`--minutes-since`). It will NOT break early if it sees an email it already saw (`--early 0`) and it will

@@ -5,7 +5,8 @@ from datetime import datetime
 from langchain.agents.react.agent import create_react_agent
 from langchain_core.messages import ToolMessage
 from langchain_core.runnables import RunnableConfig
-from langchain_openai import ChatOpenAI
+from langchain_ollama import ChatOllama
+#from langchain_openai import ChatOpenAI
 
 from eaia.gmail import get_events_for_days
 from eaia.schemas import State
@@ -64,9 +65,11 @@ Subject: {subject}
 
 
 async def find_meeting_time(state: State, config: RunnableConfig):
-    """Write an email to a customer."""
-    model = config["configurable"].get("model", "gpt-4o")
-    llm = ChatOpenAI(model=model, temperature=0)
+    """ Write scheduling email. """
+    model = config["configurable"].get("model", "llama3.1:8b")
+    llm = ChatOllama(model=model, temperature=0)
+    # model = config["configurable"].get("model", "gpt-4o")
+    # llm = ChatOpenAI(model=model, temperature=0)
     agent = create_react_agent(llm, [get_events_for_days])
     current_date = datetime.now()
     prompt_config = get_config(config)

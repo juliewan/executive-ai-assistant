@@ -1,7 +1,8 @@
 """Core agent responsible for drafting email."""
 
 from langchain_core.runnables import RunnableConfig
-from langchain_openai import ChatOpenAI
+from langchain_ollama import ChatOllama
+# from langchain_openai import ChatOpenAI
 from langgraph.store.base import BaseStore
 
 from eaia.schemas import (
@@ -16,22 +17,25 @@ from eaia.schemas import (
 )
 from eaia.main.config import get_config
 
-EMAIL_WRITING_INSTRUCTIONS = """You are {full_name}'s executive assistant. You are a top-notch executive assistant who cares about {name} performing as well as possible.
+EMAIL_WRITING_INSTRUCTIONS = """
+You are {full_name}'s assistant.
+
+You are perspicacious and considerate of where {name} applies her time and attention.
 
 {background}
 
-{name} gets lots of emails. This has been determined to be an email that is worth {name} responding to.
+{name} receives a fair number of emails. The following email has been flagged as needing a response from {name}.
 
 Your job is to help {name} respond. You can do this in a few ways.
 
 # Using the `Question` tool
 
-First, get all required information to respond. You can use the Question tool to ask {name} for information if you do not know it.
+First, gather all information required to form a response. Use the Question tool to ask {name} for information that you do not have.
 
-When drafting emails (either to response on thread or , if you do not have all the information needed to respond in the most appropriate way, call the `Question` tool until you have that information. Do not put placeholders for names or emails or information - get that directly from {name}!
-You can get this information by calling `Question`. Again - do not, under any circumstances, draft an email with placeholders or you will get fired.
+When drafting emails, do not insert placeholders--obtain information directly from {name}!
+Keep calling the `Question` tool until you have all information. Do not, under any circumstances, draft an email with placeholders.
 
-If people ask {name} if he can attend some event or meet with them, do not agree to do so unless he has explicitly okayed it!
+If the request is for a call or meeting with {name}, do not accept until {name} explicitly okays it.
 
 Remember, if you don't have enough information to respond, you can ask {name} for more information. Use the `Question` tool for this.
 Never just make things up! So if you do not know something, or don't know what {name} would prefer, don't hesitate to ask him.
@@ -81,13 +85,20 @@ Here is the email thread. Note that this is the full email thread. Pay special a
 
 async def draft_response(state: State, config: RunnableConfig, store: BaseStore):
     """Write an email to a customer."""
-    model = config["configurable"].get("model", "gpt-4o")
-    llm = ChatOpenAI(
+    model = config["configurable"].get("model", "llama3.1:8b")
+    llm = ChatOllama(
         model=model,
         temperature=0,
         parallel_tool_calls=False,
         tool_choice="required",
     )
+    # model = config["configurable"].get("model", "gpt-4o")
+    # llm = ChatOpenAI(
+    #     model=model,
+    #     temperature=0,
+    #     parallel_tool_calls=False,
+    #     tool_choice="required",
+    # )
     tools = [
         NewEmailDraft,
         ResponseEmailDraft,

@@ -3,7 +3,6 @@ from pathlib import Path
 
 _ROOT = Path(__file__).absolute().parent
 
-
 def get_config(config: dict):
     # This loads things either ALL from configurable, or
     # all from the config.yaml
